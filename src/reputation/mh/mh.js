@@ -21,6 +21,7 @@ class AsyncMsgHandler {
     this.callbacks = {};
 
     this.registerPlugin.bind(this);
+    this.isPluginConnected.bind(this);
     this.deletePlugin.bind(this);
     this.sendRaw.bind(this);
     this.handleMsg.bind(this);
@@ -42,15 +43,21 @@ class AsyncMsgHandler {
   }
 
   // peerAddr: string
+  async isPluginConnected(peerAddr) {
+    return peerAccounts.getAccount(peerAddr).isConnected();
+  }
+
+  // peerAddr: string
   async deletePlugin(peerAddr) {
     return peerAccounts.deleteAccount(peerAddr)
   }
 
+  // GOTCHA: plugin is not necessarily connected
   // Send a raw buffer to a peer given a peer address
   // rawBuf: Buffer
   async sendRaw (peerAddr, rawBuf) {
     let plugin = peerAccounts.getAccount(peerAddr);
-    plugin.sendData(formatPacket(rawBuf));
+    return plugin.sendData(formatPacket(rawBuf));
   }
 
   // Queues the message for the event loop to later handle

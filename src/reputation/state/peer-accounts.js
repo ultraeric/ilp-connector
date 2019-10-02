@@ -1,11 +1,14 @@
 const globalState = require("./state").globalState;
 
+
 class PeerAccounts {
-  constructor () {
+  constructor() {
     this.getAccounts.bind(this);
     this.getAccount.bind(this);
     this.addAccount.bind(this);
     this.deleteAccount.bind(this);
+    this.registerNewAccountListener.bind(this);
+    this.accountListener = null;
   }
 
   // Returns all tracked peer accounts as a map (peerId => plugin)
@@ -25,6 +28,7 @@ class PeerAccounts {
     let accts = this.getAccounts();
     accts[peerAddr] = plugin;
     globalState.set('000-reputation-accounts', accts);
+    this._tryRegisterAcct(peerAddr, plugin);
   }
 
   // Deletes a tracked peer account
@@ -32,6 +36,26 @@ class PeerAccounts {
     let accts = this.getAccounts();
     delete accts[peerAddr];
     globalState.set('000-reputation-accounts', peerAddr);
+  }
+
+  // Register new account listener, only called when account is actually ready.
+  // cb: func<string>
+  registerNewAccountListener(cb) {
+    if (!this.accountListener) {
+      this.accountListener = cb;
+    }
+  }
+
+  // Attempts to register plugin if it has connected to peer. If not, tries again in 250ms.
+  _tryRegisterAcct(peerAddr, plugin) {
+    console.log('try registering account');
+    if (plugin.isConnected()) {
+      if (typeof(this.accountListener) === 'function') {
+        this.accountListener(peerAddr, plugin);
+      }
+    } else {
+      setTimeout(() => this._tryRegisterAcct(peerAddr, plugin), 250);
+    }
   }
 }
 

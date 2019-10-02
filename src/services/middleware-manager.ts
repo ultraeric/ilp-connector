@@ -2,7 +2,7 @@ import reduct = require('reduct')
 
 import { loadModuleOfType, composeMiddleware } from '../lib/utils'
 import { create as createLogger } from '../common/log'
-import { serializeIlpPrepare} from 'ilp-packet';
+import { serializeIlpPrepare } from 'ilp-packet';
 
 const log = createLogger('middleware-manager');
 
