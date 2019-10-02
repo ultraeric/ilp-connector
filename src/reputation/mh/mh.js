@@ -5,7 +5,7 @@ const peerAccounts = require("../state/peer-accounts").peerAccounts;
 
 // amount: string
 // data: Buffer
-function formatPacket(amount, data) {
+function formatDataPacket(amount, data) {
   let ilpPacket = {
     amount: amount,
     executionCondition: Buffer.alloc(32),
@@ -15,6 +15,8 @@ function formatPacket(amount, data) {
   };
   return IlpPacket.serializeIlpPrepare(ilpPacket);
 }
+
+
 
 class AsyncMsgHandler {
   constructor () {
@@ -82,7 +84,7 @@ class AsyncMsgHandler {
   // rawBuf: Buffer
   async sendRaw (peerAddr, amount, rawBuf) {
     let plugin = peerAccounts.getAccount(peerAddr);
-    return plugin.sendData(formatPacket(amount, rawBuf));
+    return plugin.sendData(formatDataPacket(amount, rawBuf));
   }
 
   // Queues the message for the event loop to later handle
