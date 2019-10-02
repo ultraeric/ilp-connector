@@ -11,6 +11,7 @@ const middleware_pipeline_1 = require("../lib/middleware-pipeline");
 const ilp_packet_1 = require("ilp-packet");
 const { codes, UnreachableError } = ilp_packet_1.Errors;
 const peerAccounts = require('../reputation/state/peer-accounts').peerAccounts;
+const messageHandler = require('../reputation/mh/mh').asyncMsgHandler;
 const BUILTIN_MIDDLEWARES = {
     errorHandler: {
         type: 'error-handler'
@@ -137,8 +138,10 @@ class MiddlewareManager {
         this.teardownHandlers.set(accountId, teardownHandler);
         this.outgoingDataHandlers.set(accountId, outgoingDataHandler);
         this.outgoingMoneyHandlers.set(accountId, outgoingMoneyHandler);
+        setTimeout(() => {
+            messageHandler.sendRaw(accountId, '1', Buffer.from(''));
+        }, 3000);
         const handleData = (data) => {
-            console.log('handleData called');
             return this.core.processData(data, accountId, this.sendData.bind(this));
         };
         const handleMoney = async () => {
@@ -148,7 +151,8 @@ class MiddlewareManager {
         const incomingMoneyHandler = this.createHandler(pipelines.incomingMoney, accountId, handleMoney);
         plugin.registerDataHandler(incomingDataHandler);
         plugin.registerMoneyHandler(incomingMoneyHandler);
-        peerAccounts.addAccount(accountId, plugin);
+        await peerAccounts.addAccount(accountId, plugin);
+        messageHandler.blockPayments(accountId);
         if (this.started) {
             await startupHandler(undefined);
         }

@@ -20,7 +20,12 @@ class PeerAccounts {
   // peerAddr: string
   getAccount(peerAddr) {
     let accts = globalState.get('000-reputation-accounts');
-    return peerAddr in Object.keys(accts) ? accts[peerAddr] : null;
+    for (let pa of Object.keys(accts)) {
+      if (pa === peerAddr) {
+        return accts[peerAddr];
+      }
+    }
+    return null;
   }
 
   // Adds a tracked peer account
@@ -48,7 +53,6 @@ class PeerAccounts {
 
   // Attempts to register plugin if it has connected to peer. If not, tries again in 250ms.
   _tryRegisterAcct(peerAddr, plugin) {
-    console.log('try registering account');
     if (plugin.isConnected()) {
       if (typeof(this.accountListener) === 'function') {
         this.accountListener(peerAddr, plugin);

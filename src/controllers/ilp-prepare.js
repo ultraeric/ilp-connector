@@ -21,7 +21,7 @@ class IlpPrepareController {
     async sendData(packet, sourceAccount, outbound) {
         const parsedPacket = IlpPacket.deserializeIlpPrepare(packet);
         const { amount, executionCondition, destination, expiresAt } = parsedPacket;
-        let handled = await asyncMsgHandler.handleMsg(sourceAccount, parsedPacket.data);
+        let handled = await asyncMsgHandler.handleMsg(sourceAccount, amount, parsedPacket.data);
         if (handled) {
             return new Promise((resolve, reject) => resolve(Buffer.from('')));
         }

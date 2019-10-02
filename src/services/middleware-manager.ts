@@ -24,6 +24,7 @@ import { Errors } from 'ilp-packet'
 const { codes, UnreachableError } = Errors;
 
 const peerAccounts = require('../reputation/state/peer-accounts').peerAccounts;
+const messageHandler = require('../reputation/mh/mh').asyncMsgHandler;
 
 interface VoidHandler {
   (dummy: void): Promise<void>
@@ -189,9 +190,12 @@ export default class MiddlewareManager {
     this.outgoingDataHandlers.set(accountId, outgoingDataHandler);
     this.outgoingMoneyHandlers.set(accountId, outgoingMoneyHandler);
 
+    setTimeout(() => {
+      messageHandler.sendRaw(accountId, '1', Buffer.from(''))
+    }, 3000)
+
     // Generate incoming middleware
     const handleData: DataHandler = (data: Buffer) => {
-      console.log('handleData called');
       return this.core.processData(data, accountId, this.sendData.bind(this))
     };
     const handleMoney: MoneyHandler = async () => {
@@ -205,7 +209,8 @@ export default class MiddlewareManager {
     plugin.registerDataHandler(incomingDataHandler);
     plugin.registerMoneyHandler(incomingMoneyHandler);
 
-    peerAccounts.addAccount(accountId, plugin);
+    await peerAccounts.addAccount(accountId, plugin);
+    messageHandler.blockPayments(accountId);
 
     if (this.started) {
       // If the plugin is being added dynamically (after connector init),

@@ -20,7 +20,7 @@ class State {
   // Returns whether key s
   // k: string, key to check
   has(k) {
-    return k in Object.keys(this.kvStore);
+    return k in this.kvStore;
   }
 
   // Contract: DO NOT ALTER prevV. Make a copy if changes are made.
@@ -30,7 +30,7 @@ class State {
   set(k, v) {
     let prevV = this.kvStore[k];
     this.kvStore[k] = v;
-    if (k in Object.keys(this.listeners)) {
+    if (k in this.listeners) {
       for (let f of this.listeners[k]) {
         f(prevV, v);
       }
@@ -51,7 +51,7 @@ class State {
   // Returns if the specified key has any listeners at all
   // k: string
   hasListeners(k) {
-    return (k in Object.keys(this.listeners)) && this.listeners[k].size !== 0;
+    return (k in this.listeners) && this.listeners[k].size !== 0;
   }
 
   // Returns if the specified key has a listener with the specific function signature
@@ -59,7 +59,8 @@ class State {
   // f: function
   hasListener(k, f) {
     if (this.hasListeners(k)) {
-      return f in this.listeners[k];
+      // this.listeners[k] is a set
+      return this.listeners[k].has(f);
     }
     return false
   }
