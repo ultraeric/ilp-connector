@@ -190,9 +190,9 @@ export default class MiddlewareManager {
     this.outgoingDataHandlers.set(accountId, outgoingDataHandler);
     this.outgoingMoneyHandlers.set(accountId, outgoingMoneyHandler);
 
-    setTimeout(() => {
-      messageHandler.sendRaw(accountId, '1', Buffer.from(''))
-    }, 3000)
+    // setTimeout(() => {
+    //   messageHandler.sendRaw(accountId, '1', Buffer.from(''))
+    // }, 3000)
 
     // Generate incoming middleware
     const handleData: DataHandler = (data: Buffer) => {

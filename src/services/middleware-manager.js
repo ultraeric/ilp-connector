@@ -138,9 +138,6 @@ class MiddlewareManager {
         this.teardownHandlers.set(accountId, teardownHandler);
         this.outgoingDataHandlers.set(accountId, outgoingDataHandler);
         this.outgoingMoneyHandlers.set(accountId, outgoingMoneyHandler);
-        setTimeout(() => {
-            messageHandler.sendRaw(accountId, '1', Buffer.from(''));
-        }, 3000);
         const handleData = (data) => {
             return this.core.processData(data, accountId, this.sendData.bind(this));
         };
