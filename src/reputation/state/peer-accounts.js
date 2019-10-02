@@ -44,7 +44,7 @@ class PeerAccounts {
   }
 
   // Register new account listener, only called when account is actually ready.
-  // cb: func<string>
+  // cb: func(string)
   registerNewAccountListener(cb) {
     if (!this.accountListener) {
       this.accountListener = cb;

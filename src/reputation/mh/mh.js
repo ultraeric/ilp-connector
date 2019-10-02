@@ -3,6 +3,30 @@ const IlpPacket = require("ilp-packet/dist/index");
 const globalState = require("../state/state").globalState;
 const peerAccounts = require("../state/peer-accounts").peerAccounts;
 
+/**
+ * AsyncMsgHandler
+ *
+ * Primary goal is to provide read/write capabilities from and to particular peer addresses
+ *
+ * Cond API: (peerAddr: string, amt: string, rawData: Buffer) => bool, whether or not to capture this packet
+ * Callback API: (peerAddr: string, amt: string, rawData: Buffer) => null, callback that is called when the corresponding
+ *    Cond returns true
+ *
+ * blockPayments(peerAddr: string) => null, blocks payments from going through. Only works when part of ilp-connector
+ * allowPayments(peerAddr: string) => null, allows payments. Only works when part of ilp-connector
+ * registerPlugin(peerAddr: string, plugin: Plugin) => null, registers the plugin into this packet listener. Will intercept
+ *    all data packets coming through
+ * isPluginConnected(peerAddr: string) => bool, returns whether the plugin is connected on the other end or not
+ * deletePlugin(peerAddr: string) => null, deletes a plugin
+ * sendRaw(peerAddr: string, amount: string, rawData: Buffer) => Promise, sends the raw amount and raw data to the peer address.
+ *    Note that this method should not be used for any ILP cross-network payments.
+ * registerListener (cond: func<Cond>, cb: func<Callback>) => null, registers the condition that should trigger a callback.
+ * hasCondition (cond: func<Cond>) => bool, returns whether this is currently listening to a condition
+ * deleteListeners (cond: func<Cond>) => bool, deletes callbacks and returns whether anything was deleted
+ * deleteListener (cond: func<Cond>, cb: func<Callback) => bool, deletes callback associated with a specific condition
+ *    returns whether anything was deleted
+ */
+
 // amount: string
 // data: Buffer
 function formatDataPacket(amount, data) {
@@ -64,7 +88,7 @@ class AsyncMsgHandler {
       peerAccounts.addAccount(peerAddr, plugin);
       plugin.registerDataHandler((data) => {
         const parsedPacket = IlpPacket.deserializeIlpPrepare(data);
-        this.handleMsg(parsedPacket);
+        return this.handleMsg(peerAddr, parsedPacket.amount, parsedPacket.data);
       });
     }
   }
