@@ -11,7 +11,7 @@
 /coverage/
 
 # TypeScript compiler output
-/src/**/*.js
+#/src/**/*.js
 /src/**/*.js.map
 /src/**/*.d.ts
 
