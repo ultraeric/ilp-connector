@@ -1,0 +1,29 @@
+# Connector default data directory
+/data/
+/.idea
+
+# NPM
+/node_modules/
+/npm-debug.log
+
+# NYC code coverage output
+/.nyc_output/
+/coverage/
+
+# TypeScript compiler output
+/src/**/*.js
+/src/**/*.js.map
+/src/**/*.d.ts
+
+# Generated typings for schemas should not be checked in
+/src/schemas/*.ts
+
+# Five Bells Integration Test
+/integration-test/
+
+# Miscellaneous
+*.cluster
+*.log
+/.tags*
+/web/
+.vscode/settings.json

@@ -1,0 +1,124 @@
+{
+  "name": "ilp-connector",
+  "version": "22.5.0",
+  "description": "ILP connector reference implementation",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:interledgerjs/ilp-connector.git"
+  },
+  "keywords": [
+    "interledger",
+    "five-bells",
+    "payments"
+  ],
+  "author": "Interledger Team <info@interledger.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/interledgerjs/ilp-connector/issues"
+  },
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "bin": {
+    "ilp-connector": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "start-prof": "node --prof --logfile=${CONNECTOR_V8_LOGFILE:-v8.log} src/index.js",
+    "start:watch": "nodemon src/index.js",
+    "build": "npm run schema-to-tsd && npm run compile-ts",
+    "schema-to-tsd": "node scripts/build_schema_types",
+    "compile-ts": "tsc --project .",
+    "prepack": "npm run build",
+    "prepare": "npm run build",
+    "lint": "tslint --project . && eslint test/*.test.js test/mocks/ test/helpers/",
+    "test": "nyc mocha",
+    "report-coverage": "codecov",
+    "integration": "integration-loader && integration all",
+    "commitmsg": "commitlint -e $GIT_PARAMS"
+  },
+  "engines": {
+    "node": ">=6.6.0"
+  },
+  "dependencies": {
+    "ajv": "^6.1.1",
+    "bignumber.js": "^7.2.1",
+    "change-case": "^3.0.1",
+    "debug": "^3.1.0",
+    "extensible-error": "^1.0.2",
+    "ilp-compat-plugin": "^2.0.3",
+    "ilp-packet": "^3.0.7",
+    "ilp-plugin-mini-accounts": "^4.2.0",
+    "ilp-protocol-ccp": "^1.1.1",
+    "ilp-protocol-ildcp": "^2.0.0",
+    "ilp-store-memory": "^1.0.0",
+    "leveldown": "^3.0.0",
+    "levelup": "^2.0.1",
+    "lodash": "^4.17.4",
+    "long": "^4.0.0",
+    "node-fetch": "^2.0.0",
+    "oer-utils": "^4.0.0",
+    "prom-client": "^11.1.1",
+    "reduct": "^3.3.1",
+    "riverpig": "^1.1.4",
+    "sax": "^1.2.4",
+    "source-map-support": "^0.5.13",
+    "through2": "^2.0.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^6.1.0",
+    "@commitlint/config-conventional": "^6.1.0",
+    "@justmoon/json-schema-to-markdown": "^1.0.0",
+    "@types/debug": "0.0.30",
+    "@types/levelup": "^3.1.0",
+    "@types/lodash": "^4.14.91",
+    "@types/long": "^3.0.32",
+    "@types/node": "^11.13.21",
+    "@types/node-fetch": "^1.6.7",
+    "@types/sax": "^1.0.1",
+    "@types/source-map-support": "^0.4.0",
+    "@types/through2": "^2.0.33",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "codecov": "^3.1.0",
+    "eslint": "^4.14.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "five-bells-integration-test-loader": "^1.5.3",
+    "husky": "^0.14.3",
+    "ilp-plugin-mirror": "^1.0.0",
+    "json-schema-to-typescript": "^5.2.2",
+    "mdast-util-inject": "^1.1.0",
+    "memdown": "^1.4.1",
+    "mocha": "^5.0.0",
+    "mock-require": "^3.0.1",
+    "mock-socket": "^7.1.0",
+    "nock": "^9.1.5",
+    "nodemon": "^1.17.3",
+    "nyc": "^11.4.1",
+    "remark-parse": "^5.0.0",
+    "remark-stringify": "^5.0.0",
+    "remark-toc": "^5.0.0",
+    "sinon": "^4.1.3",
+    "spec-xunit-file": "0.0.1-3",
+    "ts-node": "^4.1.0",
+    "tslint": "^5.13.1",
+    "tslint-config-standard": "^7.0.0",
+    "typescript": "^3.3.3333",
+    "unified": "^6.1.6"
+  },
+  "config": {
+    "five-bells-integration-test-loader": {
+      "module": "five-bells-integration-test",
+      "repo": "interledgerjs/five-bells-integration-test"
+    }
+  },
+  "nyc": {
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ]
+  }
+}

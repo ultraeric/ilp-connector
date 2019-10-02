@@ -1,0 +1,7 @@
+node_modules/
+integration-test/
+*.cluster
+/npm-debug.log
+/coverage
+
+.npmrc
